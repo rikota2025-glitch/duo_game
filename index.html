@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Sort Puzzle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- レベル選択画面 -->
+  <div id="level-select-screen" class="screen">
+    <h1>Water Sort Puzzle</h1>
+    <div id="level-grid" class="level-grid"></div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="game-screen" class="screen hidden">
+    <div class="game-header">
+      <span id="level-label">Level 1</span>
+      <span id="moves-label">Moves: 0</span>
+    </div>
+    <div id="tubes-container" class="tubes-container"></div>
+    <div class="game-controls">
+      <button id="undo-btn" class="btn">↩ Undo</button>
+      <button id="restart-btn" class="btn">🔄 Restart</button>
+      <button id="back-btn" class="btn">◁ Back</button>
+    </div>
+  </div>
+
+  <!-- クリアオーバーレイ -->
+  <div id="clear-overlay" class="overlay hidden">
+    <div class="overlay-content">
+      <h2>🎉 クリア！</h2>
+      <p id="clear-moves"></p>
+      <button id="next-level-btn" class="btn btn-primary">次のレベルへ →</button>
+      <button id="back-to-levels-btn" class="btn">レベル選択に戻る</button>
+    </div>
+  </div>
+
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
