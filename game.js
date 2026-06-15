@@ -47,3 +47,14 @@ function undo(state) {
     history: state.history.slice(0, -1),
   };
 }
+
+function isSolved(tubes) {
+  for (const tube of tubes) {
+    if (tube.length === 0) continue;
+    const firstColor = tube[0];
+    for (let i = 1; i < tube.length; i++) {
+      if (tube[i] !== firstColor) return false;
+    }
+  }
+  return true;
+}

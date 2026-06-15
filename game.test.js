@@ -128,4 +128,31 @@ describe('undo', () => {
   });
 });
 
+describe('isSolved', () => {
+  it('全試験管が単色または空ならクリア', () => {
+    const tubes = [["red", "red", "red"], ["blue", "blue", "blue"], []];
+    assert(isSolved(tubes) === true);
+  });
+
+  it('混ざっていたらクリアではない', () => {
+    const tubes = [["red", "blue"], ["blue", "red"]];
+    assert(isSolved(tubes) === false);
+  });
+
+  it('全て空でもクリア', () => {
+    const tubes = [[], [], []];
+    assert(isSolved(tubes) === true);
+  });
+
+  it('1色だけの試験管はクリア', () => {
+    const tubes = [["red"]];
+    assert(isSolved(tubes) === true);
+  });
+
+  it('5段全て同じ色でクリア', () => {
+    const tubes = [["red", "red", "red", "red", "red"], []];
+    assert(isSolved(tubes) === true);
+  });
+});
+
 render();
