@@ -201,4 +201,109 @@ describe('handleTap', () => {
   });
 });
 
+describe('LEVELS', () => {
+  it('30レベルある', () => {
+    assertEqual(LEVELS.length, 30);
+  });
+
+  it('レベル1〜5は3色、5本（3色付き+2空）', () => {
+    for (let i = 0; i < 5; i++) {
+      const level = LEVELS[i];
+      assertEqual(level.length, 5, `Level ${i + 1} should have 5 tubes`);
+      const colors = new Set();
+      let emptyCount = 0;
+      for (const tube of level) {
+        if (tube.length === 0) { emptyCount++; continue; }
+        tube.forEach(c => colors.add(c));
+      }
+      assertEqual(emptyCount, 2, `Level ${i + 1} should have 2 empty tubes`);
+      assertEqual(colors.size, 3, `Level ${i + 1} should use 3 colors`);
+    }
+  });
+
+  it('レベル6〜12は4色、6本', () => {
+    for (let i = 5; i < 12; i++) {
+      const level = LEVELS[i];
+      assertEqual(level.length, 6, `Level ${i + 1} should have 6 tubes`);
+      const colors = new Set();
+      let emptyCount = 0;
+      for (const tube of level) {
+        if (tube.length === 0) { emptyCount++; continue; }
+        tube.forEach(c => colors.add(c));
+      }
+      assertEqual(emptyCount, 2, `Level ${i + 1} should have 2 empty tubes`);
+      assertEqual(colors.size, 4, `Level ${i + 1} should use 4 colors`);
+    }
+  });
+
+  it('レベル13〜20は5色、7本', () => {
+    for (let i = 12; i < 20; i++) {
+      const level = LEVELS[i];
+      assertEqual(level.length, 7, `Level ${i + 1} should have 7 tubes`);
+      const colors = new Set();
+      let emptyCount = 0;
+      for (const tube of level) {
+        if (tube.length === 0) { emptyCount++; continue; }
+        tube.forEach(c => colors.add(c));
+      }
+      assertEqual(emptyCount, 2, `Level ${i + 1} should have 2 empty tubes`);
+      assertEqual(colors.size, 5, `Level ${i + 1} should use 5 colors`);
+    }
+  });
+
+  it('レベル21〜27は6色、8本', () => {
+    for (let i = 20; i < 27; i++) {
+      const level = LEVELS[i];
+      assertEqual(level.length, 8, `Level ${i + 1} should have 8 tubes`);
+      const colors = new Set();
+      let emptyCount = 0;
+      for (const tube of level) {
+        if (tube.length === 0) { emptyCount++; continue; }
+        tube.forEach(c => colors.add(c));
+      }
+      assertEqual(emptyCount, 2, `Level ${i + 1} should have 2 empty tubes`);
+      assertEqual(colors.size, 6, `Level ${i + 1} should use 6 colors`);
+    }
+  });
+
+  it('レベル28〜30は7色、9本', () => {
+    for (let i = 27; i < 30; i++) {
+      const level = LEVELS[i];
+      assertEqual(level.length, 9, `Level ${i + 1} should have 9 tubes`);
+      const colors = new Set();
+      let emptyCount = 0;
+      for (const tube of level) {
+        if (tube.length === 0) { emptyCount++; continue; }
+        tube.forEach(c => colors.add(c));
+      }
+      assertEqual(emptyCount, 2, `Level ${i + 1} should have 2 empty tubes`);
+      assertEqual(colors.size, 7, `Level ${i + 1} should use 7 colors`);
+    }
+  });
+
+  it('各色はちょうど5個ずつ存在する', () => {
+    for (let i = 0; i < LEVELS.length; i++) {
+      const colorCount = {};
+      for (const tube of LEVELS[i]) {
+        for (const c of tube) {
+          colorCount[c] = (colorCount[c] || 0) + 1;
+        }
+      }
+      for (const [color, count] of Object.entries(colorCount)) {
+        assertEqual(count, 5, `Level ${i + 1}: color "${color}" has ${count} instead of 5`);
+      }
+    }
+  });
+
+  it('色付き試験管は全て5段', () => {
+    for (let i = 0; i < LEVELS.length; i++) {
+      for (const tube of LEVELS[i]) {
+        if (tube.length > 0) {
+          assertEqual(tube.length, 5, `Level ${i + 1}: non-empty tube has ${tube.length} instead of 5`);
+        }
+      }
+    }
+  });
+});
+
 render();
