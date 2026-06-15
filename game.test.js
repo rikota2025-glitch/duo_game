@@ -90,4 +90,42 @@ describe('executeMove', () => {
   });
 });
 
+describe('undo', () => {
+  it('直前の移動を取り消す', () => {
+    const state = createGameState([["red", "blue"], []]);
+    const moved = executeMove(state, 0, 1);
+    const undone = undo(moved);
+    assertEqual(undone.tubes[0], ["red", "blue"]);
+    assertEqual(undone.tubes[1], []);
+    assertEqual(undone.moves, 0);
+  });
+
+  it('履歴が空のときはそのまま返す', () => {
+    const state = createGameState([["red"], []]);
+    const undone = undo(state);
+    assertEqual(undone.tubes[0], ["red"]);
+    assertEqual(undone.history.length, 0);
+  });
+
+  it('選択状態がリセットされる', () => {
+    const state = createGameState([["red"], []]);
+    const moved = executeMove(state, 0, 1);
+    moved.selectedTube = 0;
+    const undone = undo(moved);
+    assertEqual(undone.selectedTube, -1);
+  });
+
+  it('複数回undoできる', () => {
+    let state = createGameState([["red", "blue"], ["green"], []]);
+    state = executeMove(state, 0, 2);
+    state = executeMove(state, 1, 2);
+    state = undo(state);
+    assertEqual(state.tubes[1], ["green"]);
+    assertEqual(state.tubes[2], ["blue"]);
+    state = undo(state);
+    assertEqual(state.tubes[0], ["red", "blue"]);
+    assertEqual(state.tubes[2], []);
+  });
+});
+
 render();

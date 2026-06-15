@@ -36,3 +36,14 @@ function executeMove(state, fromIndex, toIndex) {
     }],
   };
 }
+
+function undo(state) {
+  if (state.history.length === 0) return state;
+  const prev = state.history[state.history.length - 1];
+  return {
+    tubes: prev.tubes.map(tube => [...tube]),
+    moves: prev.moves,
+    selectedTube: -1,
+    history: state.history.slice(0, -1),
+  };
+}
