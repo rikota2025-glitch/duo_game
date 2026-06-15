@@ -306,4 +306,77 @@ describe('LEVELS', () => {
   });
 });
 
+describe('統合テスト: ゲームフロー', () => {
+  it('レベル開始からクリアまでの一連のフロー', () => {
+    const simpleLevel = [
+      ["red", "blue"],
+      ["blue", "red"],
+      [],
+    ];
+    let state = createGameState(simpleLevel);
+
+    // red を空の試験管に移動
+    state = handleTap(state, 0);
+    assertEqual(state.selectedTube, 0);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[0], ["red"]);
+    assertEqual(state.tubes[2], ["blue"]);
+    assertEqual(state.moves, 1);
+
+    // tube 1 の red を tube 2 に → 不可（blue の上に red）
+    state = handleTap(state, 1);
+    assertEqual(state.selectedTube, 1);
+    state = handleTap(state, 2);
+    assertEqual(state.selectedTube, 2);
+
+    // tube 2 の blue を tube 0 に移動（red の上に blue は不可）
+    state = handleTap(state, 0);
+    assertEqual(state.selectedTube, 0);
+
+    // 別のアプローチ: restart
+    state = createGameState(simpleLevel);
+
+    // tube 1 top = red → tube 2（空）
+    state = handleTap(state, 1);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[1], ["blue"]);
+    assertEqual(state.tubes[2], ["red"]);
+
+    // tube 0 top = blue → tube 1（blue の上）
+    state = handleTap(state, 0);
+    state = handleTap(state, 1);
+    assertEqual(state.tubes[0], ["red"]);
+    assertEqual(state.tubes[1], ["blue", "blue"]);
+
+    // tube 0 top = red → tube 2（red の上）
+    state = handleTap(state, 0);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[0], []);
+    assertEqual(state.tubes[2], ["red", "red"]);
+
+    assert(isSolved(state.tubes) === true);
+    assertEqual(state.moves, 3);
+  });
+
+  it('Undoで操作を戻してもゲームが一貫している', () => {
+    const level = [["red", "blue"], ["blue", "red"], []];
+    let state = createGameState(level);
+
+    state = handleTap(state, 0);
+    state = handleTap(state, 2);
+    assertEqual(state.moves, 1);
+
+    state = undo(state);
+    assertEqual(state.moves, 0);
+    assertEqual(state.tubes[0], ["red", "blue"]);
+    assertEqual(state.tubes[2], []);
+
+    // undo後に再度操作可能
+    state = handleTap(state, 1);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[1], ["blue"]);
+    assertEqual(state.tubes[2], ["red"]);
+  });
+});
+
 render();
