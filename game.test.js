@@ -54,4 +54,40 @@ describe('canMove', () => {
   });
 });
 
+describe('executeMove', () => {
+  it('一番上の液体を1つだけ移動する', () => {
+    const state = createGameState([["red", "blue"], ["green", "blue"]]);
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.tubes[0], ["red"]);
+    assertEqual(newState.tubes[1], ["green", "blue", "blue"]);
+  });
+
+  it('手数が1増える', () => {
+    const state = createGameState([["red"], []]);
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.moves, 1);
+  });
+
+  it('履歴に前の状態が保存される', () => {
+    const state = createGameState([["red", "blue"], []]);
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.history.length, 1);
+    assertEqual(newState.history[0].tubes[0], ["red", "blue"]);
+  });
+
+  it('選択状態がリセットされる', () => {
+    const state = createGameState([["red"], []]);
+    state.selectedTube = 0;
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.selectedTube, -1);
+  });
+
+  it('元の状態を変更しない（イミュータブル）', () => {
+    const state = createGameState([["red", "blue"], []]);
+    executeMove(state, 0, 1);
+    assertEqual(state.tubes[0], ["red", "blue"]);
+    assertEqual(state.moves, 0);
+  });
+});
+
 render();
