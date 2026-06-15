@@ -22,4 +22,36 @@ describe('createGameState', () => {
   });
 });
 
+describe('canMove', () => {
+  it('同じ色の上に移動できる', () => {
+    const tubes = [["red", "blue"], ["green", "blue"]];
+    assert(canMove(tubes, 0, 1) === true);
+  });
+
+  it('空の試験管に移動できる', () => {
+    const tubes = [["red", "blue"], []];
+    assert(canMove(tubes, 0, 1) === true);
+  });
+
+  it('違う色の上には移動できない', () => {
+    const tubes = [["red", "blue"], ["green", "red"]];
+    assert(canMove(tubes, 0, 1) === false);
+  });
+
+  it('満杯の試験管には移動できない', () => {
+    const tubes = [["red"], ["a", "b", "c", "d", "e"]];
+    assert(canMove(tubes, 0, 1) === false);
+  });
+
+  it('空の試験管からは移動できない', () => {
+    const tubes = [[], ["red"]];
+    assert(canMove(tubes, 0, 1) === false);
+  });
+
+  it('同じ試験管には移動できない', () => {
+    const tubes = [["red", "blue"]];
+    assert(canMove(tubes, 0, 0) === false);
+  });
+});
+
 render();
