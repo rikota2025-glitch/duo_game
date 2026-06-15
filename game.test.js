@@ -155,4 +155,50 @@ describe('isSolved', () => {
   });
 });
 
+describe('handleTap', () => {
+  it('未選択で試験管をタップすると選択される', () => {
+    const state = createGameState([["red", "blue"], ["green"]]);
+    const newState = handleTap(state, 0);
+    assertEqual(newState.selectedTube, 0);
+  });
+
+  it('空の試験管をタップしても選択されない', () => {
+    const state = createGameState([["red"], []]);
+    const newState = handleTap(state, 1);
+    assertEqual(newState.selectedTube, -1);
+  });
+
+  it('選択中に同じ試験管をタップすると選択解除', () => {
+    const state = createGameState([["red", "blue"], []]);
+    state.selectedTube = 0;
+    const newState = handleTap(state, 0);
+    assertEqual(newState.selectedTube, -1);
+  });
+
+  it('選択中に移動可能な試験管をタップすると移動する', () => {
+    const state = createGameState([["red", "blue"], []]);
+    state.selectedTube = 0;
+    const newState = handleTap(state, 1);
+    assertEqual(newState.tubes[0], ["red"]);
+    assertEqual(newState.tubes[1], ["blue"]);
+    assertEqual(newState.selectedTube, -1);
+    assertEqual(newState.moves, 1);
+  });
+
+  it('選択中に移動不可な試験管をタップすると選択先が切り替わる', () => {
+    const state = createGameState([["red", "blue"], ["green", "red"], ["blue"]]);
+    state.selectedTube = 0;
+    const newState = handleTap(state, 1);
+    assertEqual(newState.selectedTube, 1);
+    assertEqual(newState.moves, 0);
+  });
+
+  it('選択中に移動不可な空でない試験管をタップすると選択切り替え', () => {
+    const state = createGameState([["red"], ["blue", "blue", "blue", "blue", "blue"]]);
+    state.selectedTube = 0;
+    const newState = handleTap(state, 1);
+    assertEqual(newState.selectedTube, 1);
+  });
+});
+
 render();

@@ -58,3 +58,23 @@ function isSolved(tubes) {
   }
   return true;
 }
+
+function handleTap(state, tubeIndex) {
+  if (state.selectedTube === -1) {
+    if (state.tubes[tubeIndex].length === 0) return state;
+    return { ...state, selectedTube: tubeIndex };
+  }
+
+  if (state.selectedTube === tubeIndex) {
+    return { ...state, selectedTube: -1 };
+  }
+
+  if (canMove(state.tubes, state.selectedTube, tubeIndex)) {
+    return executeMove(state, state.selectedTube, tubeIndex);
+  }
+
+  if (state.tubes[tubeIndex].length === 0) {
+    return state;
+  }
+  return { ...state, selectedTube: tubeIndex };
+}
