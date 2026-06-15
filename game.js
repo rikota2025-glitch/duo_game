@@ -78,3 +78,117 @@ function handleTap(state, tubeIndex) {
   }
   return { ...state, selectedTube: tubeIndex };
 }
+
+let currentLevel = 0;
+let gameState = null;
+
+function getCleared() {
+  try {
+    return JSON.parse(localStorage.getItem('waterSortCleared') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function setCleared(levelIndex) {
+  const cleared = getCleared();
+  if (!cleared.includes(levelIndex)) {
+    cleared.push(levelIndex);
+    localStorage.setItem('waterSortCleared', JSON.stringify(cleared));
+  }
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(screenId).classList.remove('hidden');
+}
+
+function renderLevelSelect() {
+  const grid = document.getElementById('level-grid');
+  const cleared = getCleared();
+  grid.innerHTML = '';
+  for (let i = 0; i < LEVELS.length; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'level-btn' + (cleared.includes(i) ? ' cleared' : '');
+    btn.textContent = i + 1;
+    btn.addEventListener('click', () => startLevel(i));
+    grid.appendChild(btn);
+  }
+}
+
+function renderGame() {
+  document.getElementById('level-label').textContent = `Level ${currentLevel + 1}`;
+  document.getElementById('moves-label').textContent = `Moves: ${gameState.moves}`;
+
+  const container = document.getElementById('tubes-container');
+  container.innerHTML = '';
+
+  for (let i = 0; i < gameState.tubes.length; i++) {
+    const tube = gameState.tubes[i];
+    const tubeEl = document.createElement('div');
+    tubeEl.className = 'tube' + (gameState.selectedTube === i ? ' selected' : '');
+    tubeEl.addEventListener('click', () => onTubeTap(i));
+
+    for (let j = 0; j < tube.length; j++) {
+      const liquid = document.createElement('div');
+      liquid.className = 'liquid';
+      liquid.style.backgroundColor = COLORS[tube[j]];
+      tubeEl.appendChild(liquid);
+    }
+    container.appendChild(tubeEl);
+  }
+}
+
+function startLevel(levelIndex) {
+  currentLevel = levelIndex;
+  gameState = createGameState(LEVELS[levelIndex]);
+  showScreen('game-screen');
+  document.getElementById('clear-overlay').classList.add('hidden');
+  renderGame();
+}
+
+function onTubeTap(tubeIndex) {
+  gameState = handleTap(gameState, tubeIndex);
+  renderGame();
+
+  if (isSolved(gameState.tubes) && gameState.moves > 0) {
+    setCleared(currentLevel);
+    document.getElementById('clear-moves').textContent = `${gameState.moves} 手でクリア！`;
+    document.getElementById('clear-overlay').classList.remove('hidden');
+  }
+}
+
+function init() {
+  renderLevelSelect();
+  showScreen('level-select-screen');
+
+  document.getElementById('undo-btn').addEventListener('click', () => {
+    gameState = undo(gameState);
+    renderGame();
+  });
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    startLevel(currentLevel);
+  });
+
+  document.getElementById('back-btn').addEventListener('click', () => {
+    renderLevelSelect();
+    showScreen('level-select-screen');
+  });
+
+  document.getElementById('next-level-btn').addEventListener('click', () => {
+    if (currentLevel < LEVELS.length - 1) {
+      startLevel(currentLevel + 1);
+    } else {
+      renderLevelSelect();
+      showScreen('level-select-screen');
+    }
+  });
+
+  document.getElementById('back-to-levels-btn').addEventListener('click', () => {
+    renderLevelSelect();
+    showScreen('level-select-screen');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
