@@ -175,8 +175,12 @@ function onTubeTap(tubeIndex) {
 }
 
 function init() {
-  renderLevelSelect();
-  showScreen('level-select-screen');
+  showScreen('title-screen');
+
+  document.getElementById('start-btn').addEventListener('click', () => {
+    renderLevelSelect();
+    showScreen('level-select-screen');
+  });
 
   document.getElementById('undo-btn').addEventListener('click', () => {
     gameState = undo(gameState);

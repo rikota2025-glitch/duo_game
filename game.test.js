@@ -429,6 +429,25 @@ describe('統合テスト: ゲームフロー', () => {
   });
 });
 
+describe('統合テスト: タイトル画面', () => {
+  it('init後にタイトル画面が最初に表示される', () => {
+    init();
+    const titleScreen = document.getElementById('title-screen');
+    assert(!titleScreen.classList.contains('hidden'), 'タイトル画面が表示されている');
+    const levelSelectScreen = document.getElementById('level-select-screen');
+    assert(levelSelectScreen.classList.contains('hidden'), 'レベル選択画面が非表示');
+  });
+
+  it('スタートボタンを押すとレベル選択画面に遷移する', () => {
+    init();
+    document.getElementById('start-btn').click();
+    const levelSelectScreen = document.getElementById('level-select-screen');
+    assert(!levelSelectScreen.classList.contains('hidden'), 'レベル選択画面が表示されている');
+    const titleScreen = document.getElementById('title-screen');
+    assert(titleScreen.classList.contains('hidden'), 'タイトル画面が非表示になっている');
+  });
+});
+
 describe('統合テスト: まとめ移動', () => {
   it('同じ色が積み重なった試験管をタップすると全部まとめて移動する', () => {
     const level = [
