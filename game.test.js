@@ -110,6 +110,34 @@ describe('executeMove', () => {
     assertEqual(state.tubes[0], ["red", "blue"]);
     assertEqual(state.moves, 0);
   });
+
+  it('上から同じ色が2個連続している場合は2個まとめて移動する', () => {
+    const state = createGameState([["red", "blue", "blue"], ["green", "blue"]]);
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.tubes[0], ["red"]);
+    assertEqual(newState.tubes[1], ["green", "blue", "blue", "blue"]);
+    assertEqual(newState.moves, 1);
+  });
+
+  it('移動先の空きが足りない場合は空きの分だけ移動する', () => {
+    // tube 0: ["red", "blue", "blue", "blue"] (上から "blue" が3個)
+    // tube 1: ["a", "b", "blue"] (空き = 5 - 3 = 2)
+    // min(3, 2) = 2 個だけ移動する
+    const state = createGameState([["red", "blue", "blue", "blue"], ["a", "b", "blue"]]);
+    const newState = executeMove(state, 0, 1);
+    assertEqual(newState.tubes[0], ["red", "blue"]);
+    assertEqual(newState.tubes[1], ["a", "b", "blue", "blue", "blue"]);
+    assertEqual(newState.moves, 1);
+  });
+
+  it('Undoでまとめ移動も元に戻る', () => {
+    const state = createGameState([["red", "blue", "blue"], ["green", "blue"]]);
+    const moved = executeMove(state, 0, 1);
+    const undone = undo(moved);
+    assertEqual(undone.tubes[0], ["red", "blue", "blue"]);
+    assertEqual(undone.tubes[1], ["green", "blue"]);
+    assertEqual(undone.moves, 0);
+  });
 });
 
 describe('undo', () => {
@@ -398,6 +426,40 @@ describe('統合テスト: ゲームフロー', () => {
     state = handleTap(state, 2);
     assertEqual(state.tubes[1], ["blue"]);
     assertEqual(state.tubes[2], ["red"]);
+  });
+});
+
+describe('統合テスト: まとめ移動', () => {
+  it('同じ色が積み重なった試験管をタップすると全部まとめて移動する', () => {
+    const level = [
+      ["blue", "red", "red"],
+      ["red", "blue", "blue"],
+      [],
+    ];
+    let state = createGameState(level);
+
+    // tube 0 の上2個は "red" → tube 2（空）にまとめて移動
+    state = handleTap(state, 0);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[0], ["blue"]);
+    assertEqual(state.tubes[2], ["red", "red"]);
+    assertEqual(state.moves, 1);
+
+    // tube 1 の上2個は "blue" → tube 0（"blue" の上）にまとめて移動
+    state = handleTap(state, 1);
+    state = handleTap(state, 0);
+    assertEqual(state.tubes[0], ["blue", "blue", "blue"]);
+    assertEqual(state.tubes[1], ["red"]);
+    assertEqual(state.moves, 2);
+
+    // tube 1 の "red" → tube 2（"red" の上）
+    state = handleTap(state, 1);
+    state = handleTap(state, 2);
+    assertEqual(state.tubes[1], []);
+    assertEqual(state.tubes[2], ["red", "red", "red"]);
+    assertEqual(state.moves, 3);
+
+    assert(isSolved(state.tubes) === true);
   });
 });
 

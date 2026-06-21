@@ -35,8 +35,12 @@ function canMove(tubes, fromIndex, toIndex) {
 
 function executeMove(state, fromIndex, toIndex) {
   const newTubes = state.tubes.map(tube => [...tube]);
-  const color = newTubes[fromIndex].pop();
-  newTubes[toIndex].push(color);
+  const moveCount = Math.min(
+    countMovable(newTubes, fromIndex),
+    TUBE_CAPACITY - newTubes[toIndex].length
+  );
+  const colors = newTubes[fromIndex].splice(newTubes[fromIndex].length - moveCount, moveCount);
+  newTubes[toIndex].push(...colors);
 
   return {
     tubes: newTubes,
