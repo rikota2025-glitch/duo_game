@@ -2,6 +2,28 @@ const { describe, it, assert, assertEqual, render } = TestRunner;
 
 // テストはここに追加していく
 
+describe('countMovable', () => {
+  it('上から同じ色が3個連続している場合は3を返す', () => {
+    const tubes = [["red", "blue", "blue", "blue"]];
+    assertEqual(countMovable(tubes, 0), 3);
+  });
+
+  it('上から1個だけ同じ色の場合は1を返す', () => {
+    const tubes = [["red", "blue"]];
+    assertEqual(countMovable(tubes, 0), 1);
+  });
+
+  it('空の試験管は0を返す', () => {
+    const tubes = [[]];
+    assertEqual(countMovable(tubes, 0), 0);
+  });
+
+  it('全部同じ色の場合は全個数を返す', () => {
+    const tubes = [["red", "red", "red", "red", "red"]];
+    assertEqual(countMovable(tubes, 0), 5);
+  });
+});
+
 describe('createGameState', () => {
   it('レベルデータからゲーム状態を作成する', () => {
     const level = [["red", "blue"], ["blue", "red"], []];

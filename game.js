@@ -11,6 +11,18 @@ function createGameState(level) {
 
 const TUBE_CAPACITY = 5;
 
+function countMovable(tubes, fromIndex) {
+  const tube = tubes[fromIndex];
+  if (tube.length === 0) return 0;
+  const topColor = tube[tube.length - 1];
+  let count = 0;
+  for (let i = tube.length - 1; i >= 0; i--) {
+    if (tube[i] === topColor) count++;
+    else break;
+  }
+  return count;
+}
+
 function canMove(tubes, fromIndex, toIndex) {
   if (fromIndex === toIndex) return false;
   const from = tubes[fromIndex];
