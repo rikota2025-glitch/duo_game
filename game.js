@@ -177,38 +177,38 @@ function onTubeTap(tubeIndex) {
 function init() {
   showScreen('title-screen');
 
-  document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('start-btn').onclick = () => {
     renderLevelSelect();
     showScreen('level-select-screen');
-  });
+  };
 
-  document.getElementById('undo-btn').addEventListener('click', () => {
+  document.getElementById('undo-btn').onclick = () => {
     gameState = undo(gameState);
     renderGame();
-  });
+  };
 
-  document.getElementById('restart-btn').addEventListener('click', () => {
+  document.getElementById('restart-btn').onclick = () => {
     startLevel(currentLevel);
-  });
+  };
 
-  document.getElementById('back-btn').addEventListener('click', () => {
+  document.getElementById('back-btn').onclick = () => {
     renderLevelSelect();
     showScreen('level-select-screen');
-  });
+  };
 
-  document.getElementById('next-level-btn').addEventListener('click', () => {
+  document.getElementById('next-level-btn').onclick = () => {
     if (currentLevel < LEVELS.length - 1) {
       startLevel(currentLevel + 1);
     } else {
       renderLevelSelect();
       showScreen('level-select-screen');
     }
-  });
+  };
 
-  document.getElementById('back-to-levels-btn').addEventListener('click', () => {
+  document.getElementById('back-to-levels-btn').onclick = () => {
     renderLevelSelect();
     showScreen('level-select-screen');
-  });
+  };
 }
 
 document.addEventListener('DOMContentLoaded', init);
