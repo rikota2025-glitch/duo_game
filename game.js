@@ -95,6 +95,43 @@ function handleTap(state, tubeIndex) {
   return { ...state, selectedTube: tubeIndex };
 }
 
+const ANIMALS = [
+  '🐥', '🐍', '🐒', '🐼', '🐸',
+  '🐱', '🐶', '🐰', '🐻', '🦊',
+  '🐯', '🦁', '🐘', '🦒', '🐬',
+  '🦋', '🐧', '🦜', '🐙', '🦈',
+  '🐊', '🦔', '🐨', '🦚', '🦭',
+  '🦦', '🐇', '🦙', '🐉', '🦄',
+];
+
+const ANIMAL_ANIMATIONS = ['animal-float', 'animal-bounce', 'animal-shake', 'animal-spin'];
+let animalAnimInterval = null;
+
+function showAnimal(levelIndex) {
+  const el = document.getElementById('animal-corner');
+  el.textContent = ANIMALS[levelIndex] || '🐥';
+  el.classList.remove('hidden');
+  startAnimalAnimation(el);
+}
+
+function hideAnimal() {
+  clearInterval(animalAnimInterval);
+  const el = document.getElementById('animal-corner');
+  el.classList.add('hidden');
+  ANIMAL_ANIMATIONS.forEach(a => el.classList.remove(a));
+}
+
+function startAnimalAnimation(el) {
+  clearInterval(animalAnimInterval);
+  function applyRandom() {
+    ANIMAL_ANIMATIONS.forEach(a => el.classList.remove(a));
+    const pick = ANIMAL_ANIMATIONS[Math.floor(Math.random() * ANIMAL_ANIMATIONS.length)];
+    el.classList.add(pick);
+  }
+  applyRandom();
+  animalAnimInterval = setInterval(applyRandom, 3000);
+}
+
 let currentLevel = 0;
 let gameState = null;
 
@@ -117,6 +154,7 @@ function setCleared(levelIndex) {
 function showScreen(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
   document.getElementById(screenId).classList.remove('hidden');
+  if (screenId !== 'game-screen') hideAnimal();
 }
 
 function renderLevelSelect() {
@@ -161,6 +199,7 @@ function startLevel(levelIndex) {
   showScreen('game-screen');
   document.getElementById('clear-overlay').classList.add('hidden');
   renderGame();
+  showAnimal(levelIndex);
 }
 
 function onTubeTap(tubeIndex) {

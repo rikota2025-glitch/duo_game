@@ -141,3 +141,45 @@ h1 {
   gap: 32px;
   min-height: 60vh;
 }
+
+.animal-corner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-size: 64px;
+  line-height: 1;
+  user-select: none;
+  z-index: 50;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+@keyframes animal-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes animal-bounce {
+  0%, 100% { transform: translateY(0) scaleY(1) scaleX(1); }
+  35% { transform: translateY(-22px) scaleY(0.95) scaleX(1.05); }
+  70% { transform: translateY(0) scaleY(1.15) scaleX(0.9); }
+  85% { transform: translateY(-6px) scaleY(0.95) scaleX(1.05); }
+}
+
+@keyframes animal-shake {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-18deg); }
+  40% { transform: rotate(18deg); }
+  60% { transform: rotate(-12deg); }
+  80% { transform: rotate(12deg); }
+}
+
+@keyframes animal-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.animal-float { animation: animal-float 2s ease-in-out infinite; }
+.animal-bounce { animation: animal-bounce 0.7s ease infinite; }
+.animal-shake { animation: animal-shake 0.5s ease-in-out infinite; }
+.animal-spin { animation: animal-spin 1s ease-in-out infinite; }
